@@ -11,7 +11,7 @@ from . import Translator
 def get_api_key():
     with open(os.path.join(os.path.dirname(__file__), 'config.json'), 'r') as f:
         data = json.load(f)['baidu']
-    return data['APPID'], data['APIKEY']
+    return data['APPID'], data['APPKEY']
 
 appid, appkey = get_api_key()
 
@@ -42,4 +42,4 @@ class Translator_baidu(Translator):
         r = requests.post(self.url, params=payload, headers=self.headers)
         result = r.json()
 
-        return result["trans_result"]["dst"]
+        return result["trans_result"][0]["dst"]

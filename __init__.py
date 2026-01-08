@@ -19,7 +19,7 @@ class Translator:
     def translate(self, text: str, source_lang: str = 'auto', target_lang: str = 'auto', post_process: bool = True, retry: int = 5) -> str:
         for i in range(retry):
             try:
-                return self.post_process(self._translate(text, source_lang, target_lang))
+                return self.post_process(self._translate(text, source_lang, target_lang), conduct=post_process)
             except Exception as e:
                 print(e)
                 warn('translate err, sleep {}s, retry time {}'.format(self.sleep_time, i), Warning)
