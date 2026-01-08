@@ -43,6 +43,9 @@ class TransFactory:
         elif type == 'zhipu':
             from .api_zhipu import Translator_zhipu
             translator_class = Translator_zhipu
+        elif type == 'baidu':
+            from .api_baidu import Translator_baidu
+            translator_class = Translator_baidu
         return translator_class(**kwargs)
 
 def TranslatorAll(type: str = 'tc', **kwargs) -> Translator:
