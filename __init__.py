@@ -1,6 +1,6 @@
 import re
+import time
 from warnings import warn
-
 
 class Translator:
     sleep_time: int = 1
@@ -20,8 +20,10 @@ class Translator:
         for i in range(retry):
             try:
                 return self.post_process(self._translate(text, source_lang, target_lang))
-            except:
-                warn('translate err, retry time {}'.format(i), Warning)
+            except Exception as e:
+                print(e)
+                warn('translate err, sleep {}s, retry time {}'.format(self.sleep_time, i), Warning)
+                time.sleep(self.sleep_time)
         return text
 
 
@@ -38,6 +40,9 @@ class TransFactory:
         elif type == 'llm':
             from .api_llm import Translator_llm
             translator_class = Translator_llm
+        elif type == 'zhipu':
+            from .api_zhipu import Translator_zhipu
+            translator_class = Translator_zhipu
         return translator_class(**kwargs)
 
 def TranslatorAll(type: str = 'tc', **kwargs) -> Translator:
