@@ -46,7 +46,8 @@ class Translator_zhipu(Translator):
             'fr': '法文',
             'ko': '韩文',
         }
-        self.default_translation_prompt = '请你将给定的字幕翻译成{}，{}翻译结果以如下格式输出：{{"result": <翻译结果>}}，不要输出其他无关内容。请确保翻译结果语句通顺合理，最好口语化一点。需要翻译的内容为：{}'
+        self.default_translation_prompt = '请你将给定的字幕翻译成{}，{}翻译结果以如下格式输出：{{"result": <翻译结果>}}，不要输出其他无关内容。{}请确保翻译结果语句通顺合理，最好口语化一点。需要翻译的内容为：{}'
+        self.keywords_prompt = ''
 
     def _parse_json(self, s):
         s = re.sub(r'\n', ' ', s)
@@ -57,10 +58,18 @@ class Translator_zhipu(Translator):
         text = re.sub('\n', ' ', text)
 
         source_prompt = '字幕所用语言为{}，'.format(self.lang_map[source_lang]) if source_lang != 'auto' else ''
-        prompt = self.default_translation_prompt.format(self.lang_map[target_lang], source_prompt, text)
+        prompt = self.default_translation_prompt.format(self.lang_map[target_lang], source_prompt, self.keywords_prompt, text)
 
         output = self.chatter.chat_no_rag(prompt)[0]
         output = self._parse_json(output)['result']
 
         return output
+
+    def add_key_words(self, keywords_dict : dict = None):
+        prompt_ = '可能出现的固定短语或关键词包括：{}可以结合语义使用。'
+        keywords_ = ''
+        keys = keywords_dict.keys()
+        for key in keys:
+            keywords_ += '\"{}\"意思是\"{}\"，'.format(key, keywords_dict[key])
+        self.keywords_prompt = prompt_.format(keywords_)
 

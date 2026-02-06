@@ -31,7 +31,7 @@ class Translator:
 class TransFactory:
     
     @classmethod
-    def create_translator(cls, type: int, **kwargs) -> Translator:
+    def create_translator(cls, type, **kwargs) -> Translator:
         # if type not in cls._translators:
         #     raise ValueError(f"不支持的翻译器类型: {type}. 支持的类型: {list(cls._translators.keys())}")
         if type == 'tc':
@@ -46,6 +46,9 @@ class TransFactory:
         elif type == 'baidu':
             from .api_baidu import Translator_baidu
             translator_class = Translator_baidu
+        elif type == 'google':
+            from .api_google import Translator_google
+            translator_class = Translator_google
         return translator_class(**kwargs)
 
 def TranslatorAll(type: str = 'tc', **kwargs) -> Translator:
